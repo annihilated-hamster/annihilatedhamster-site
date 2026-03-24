@@ -52,7 +52,7 @@
       font-weight: 500;
       letter-spacing: 0.12em;
       text-transform: lowercase;
-      transition: color 0.4s ease;
+      transition: color 0.4s ease, transform 0.2s ease;
       position: relative;
     }
 
@@ -65,7 +65,7 @@
       transition: width 0.4s ease;
     }
 
-    nav a:hover { color: var(--fg); }
+    nav a:hover { color: var(--fg); transform: scale(1.12); }
     nav a:hover::after { width: 100%; }
 
     /* ─── PAGES ─── */
@@ -408,6 +408,12 @@
       color: var(--fg);
       font-size: 13px;
       letter-spacing: 0.2em;
+      transition: transform 0.2s ease, letter-spacing 0.2s ease;
+      cursor: default;
+    }
+    footer:hover {
+      transform: scale(1.08);
+      letter-spacing: 0.3em;
     }
 
     /* ─── RESPONSIVE ─── */
