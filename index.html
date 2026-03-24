@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>annihilatedhamster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --bg2: #111111;
+      --fg: #e8e4dc;
+      --muted: #6a6662;
+      --dim: #2e2c2a;
+      --accent: #c5b99a;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--mono);
+      font-weight: 300;
+      font-size: 13px;
+      line-height: 1.8;
+      letter-spacing: 0.03em;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      padding: 2rem 2rem 1.5rem;
+      background: linear-gradient(to bottom, rgba(13,13,13,0.9) 0%, transparent 100%);
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: lowercase;
+      transition: color 0.4s ease;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+
+    nav a:hover { color: var(--fg); }
+    nav a:hover::after { width: 100%; }
+
+    /* ─── PAGES ─── */
+    .page {
+      display: none;
+      min-height: 100vh;
+      animation: fadeIn 0.7s ease;
+    }
+    .page.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── HOME ─── */
+    #home {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80');
+      background-size: cover;
+      background-position: center 40%;
+      filter: grayscale(60%) brightness(0.45);
+      transform: scale(1.04);
+      animation: bgDrift 30s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgDrift {
+      from { transform: scale(1.04) translateX(0); }
+      to   { transform: scale(1.04) translateX(-12px); }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(13,13,13,0.3) 0%, rgba(13,13,13,0.75) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      animation: heroReveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes heroReveal {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-headline {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      color: var(--fg);
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      margin-bottom: 2rem;
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .hero-sub:hover { color: var(--accent); }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--dim);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    /* ─── INNER PAGES ─── */
+    .inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 9rem 2rem 6rem;
+    }
+
+    .page-title {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-style: italic;
+      font-size: 2.8rem;
+      color: var(--fg);
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.01em;
+    }
+
+    .page-rule {
+      width: 40px;
+      height: 1px;
+      background: var(--dim);
+      margin-bottom: 4rem;
+    }
+
+    /* ─── CHANNEL ─── */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .video-item {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeIn 0.6s ease forwards;
+    }
+    .video-item:nth-child(1) { animation-delay: 0.05s; }
+    .video-item:nth-child(2) { animation-delay: 0.15s; }
+    .video-item:nth-child(3) { animation-delay: 0.25s; }
+    .video-item:nth-child(4) { animation-delay: 0.35s; }
+
+    .video-item iframe {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      border-radius: 2px;
+      filter: grayscale(20%);
+      transition: filter 0.4s ease;
+    }
+    .video-item iframe:hover { filter: grayscale(0%); }
+
+    .video-label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── NOTES ─── */
+    .note-entry {
+      border-top: 1px solid var(--dim);
+      padding: 2.5rem 0;
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+    }
+    .note-entry:nth-child(1) { animation-delay: 0.05s; }
+    .note-entry:nth-child(2) { animation-delay: 0.15s; }
+    .note-entry:nth-child(3) { animation-delay: 0.25s; }
+
+    .note-title {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--fg);
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.01em;
+    }
+
+    .note-summary {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 1.4rem;
+      max-width: 540px;
+      line-height: 2;
+    }
+
+    .note-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .note-bullets li {
+      font-size: 11px;
+      color: var(--muted);
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    .note-bullets li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--dim);
+    }
+
+    /* ─── PROJECTS ─── */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .project-item {
+      border-top: 1px solid var(--dim);
+      padding: 2rem 0;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+      transition: border-color 0.3s ease;
+    }
+    .project-item:nth-child(1) { animation-delay: 0.05s; }
+    .project-item:nth-child(2) { animation-delay: 0.15s; }
+    .project-item:nth-child(3) { animation-delay: 0.25s; }
+    .project-item:nth-child(4) { animation-delay: 0.35s; }
+    .project-item:hover { border-color: var(--muted); }
+
+    .project-name {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: var(--fg);
+      letter-spacing: 0.02em;
+    }
+
+    .project-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.9;
+    }
+
+    .project-tag {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      border: 1px solid var(--dim);
+      padding: 2px 8px;
+      margin-top: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    /* ─── RESOURCES ─── */
+    .resource-section { margin-bottom: 3.5rem; }
+
+    .resource-category {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--dim);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .resource-list {
+      list-style: none;
+      border-top: 1px solid var(--dim);
+    }
+
+    .resource-list li {
+      border-bottom: 1px solid var(--dim);
+      padding: 0.9rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    .resource-list li:hover { border-bottom-color: var(--muted); }
+
+    .resource-name {
+      font-size: 12px;
+      color: var(--fg);
+    }
+
+    .resource-note {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-text {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 300;
+      line-height: 2;
+      color: var(--fg);
+      max-width: 600px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeIn 0.8s ease 0.1s forwards;
+    }
+
+    .about-text em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .about-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      opacity: 0;
+      animation: fadeIn 0.8s ease 0.3s forwards;
+    }
+
+    .about-meta-row {
+      display: flex;
+      gap: 2rem;
+      align-items: baseline;
+      border-top: 1px solid var(--dim);
+      padding-top: 0.8rem;
+    }
+
+    .meta-label {
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 0.15em;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .meta-value {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 3rem;
+      color: var(--dim);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      nav { gap: 1.5rem; padding: 1.5rem 1rem 1rem; flex-wrap: wrap; justify-content: center; }
+      .inner { padding: 8rem 1.4rem 4rem; }
+      .project-item { grid-template-columns: 1fr; gap: 0.6rem; }
+      .hero-headline { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" onclick="show('home')">home</a>
+    <a href="#" onclick="show('channel')">channel</a>
+    <a href="#" onclick="show('notes')">notes</a>
+    <a href="#" onclick="show('projects')">projects</a>
+    <a href="#" onclick="show('resources')">resources</a>
+    <a href="#" onclick="show('about')">about</a>
+  </nav>
+
+  <!-- HOME -->
+  <div id="home" class="page active">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-headline">figuring things out as i go.</p>
+      <p class="hero-sub" onclick="show('notes')">read notes →</p>
+    </div>
+    <div class="hero-scroll">scroll</div>
+    <footer style="position:absolute;bottom:0;left:0;right:0;">annihilatedhamster</footer>
+  </div>
+
+  <!-- CHANNEL -->
+  <div id="channel" class="page">
+    <div class="inner">
+      <h1 class="page-title">channel</h1>
+      <div class="page-rule"></div>
+      <div class="video-grid">
+        <div class="video-item">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen loading="lazy"></iframe>
+          <p class="video-label">placeholder video 01</p>
+        </div>
+        <div class="video-item">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen loading="lazy"></iframe>
+          <p class="video-label">placeholder video 02</p>
+        </div>
+        <div class="video-item">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen loading="lazy"></iframe>
+          <p class="video-label">placeholder video 03</p>
+        </div>
+        <div class="video-item">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen loading="lazy"></iframe>
+          <p class="video-label">placeholder video 04</p>
+        </div>
+      </div>
+    </div>
+    <footer>annihilatedhamster</footer>
+  </div>
+
+  <!-- NOTES -->
+  <div id="notes" class="page">
+    <div class="inner">
+      <h1 class="page-title">notes</h1>
+      <div class="page-rule"></div>
+
+      <div class="note-entry">
+        <h2 class="note-title">on learning slowly</h2>
+        <p class="note-summary">a reflection on what it actually means to absorb something versus just knowing about it. there's a difference, and i don't think we talk about it enough.</p>
+        <ul class="note-bullets">
+          <li>understanding ≠ memorizing</li>
+          <li>the most useful knowledge lives in the gaps between lessons</li>
+          <li>going slow is often the faster path</li>
+          <li>boredom is information</li>
+        </ul>
+      </div>
+
+      <div class="note-entry">
+        <h2 class="note-title">the uncomfortable middle</h2>
+        <p class="note-summary">every project has a phase where nothing works and you can't see the end. this is about what that feels like and why it matters that you sit in it anyway.</p>
+        <ul class="note-bullets">
+          <li>most people quit here — that's the advantage</li>
+          <li>the middle is where your taste starts to show</li>
+          <li>it looks like failure from the outside</li>
+        </ul>
+      </div>
+
+      <div class="note-entry">
+        <h2 class="note-title">systems over willpower</h2>
+        <p class="note-summary">willpower runs out. structure doesn't care how you feel. some notes on how i've been thinking about building habits that survive bad weeks.</p>
+        <ul class="note-bullets">
+          <li>remove friction more than you add motivation</li>
+          <li>good defaults carry you when discipline fails</li>
+          <li>small loops compound silently</li>
+          <li>the environment shapes more than the intention</li>
+        </ul>
+      </div>
+
+    </div>
+    <footer>annihilatedhamster</footer>
+  </div>
+
+  <!-- PROJECTS -->
+  <div id="projects" class="page">
+    <div class="inner">
+      <h1 class="page-title">projects</h1>
+      <div class="page-rule"></div>
+      <div class="project-list">
+
+        <div class="project-item">
+          <div>
+            <p class="project-name">yt focus</p>
+            <span class="project-tag">browser extension</span>
+          </div>
+          <p class="project-desc">a chromium extension that strips distracting UI from youtube — no sidebar, no autoplay, no noise. built from scratch as a focus tool for intentional watching.</p>
+        </div>
+
+        <div class="project-item">
+          <div>
+            <p class="project-name">card store</p>
+            <span class="project-tag">e-commerce</span>
+          </div>
+          <p class="project-desc">a self-run eBay operation buying and selling Pokémon cards. covers sourcing, pricing, inventory, and fulfillment. top rated seller. 3+ years running.</p>
+        </div>
+
+        <div class="project-item">
+          <div>
+            <p class="project-name">this site</p>
+            <span class="project-tag">web</span>
+          </div>
+          <p class="project-desc">a quiet corner of the internet. somewhere to put things down without the noise of social media. built to feel like a notebook, not a brand.</p>
+        </div>
+
+        <div class="project-item">
+          <div>
+            <p class="project-name">home server</p>
+            <span class="project-tag">infrastructure</span>
+          </div>
+          <p class="project-desc">experimenting with self-hosted tools, local media, and personal data infrastructure. ongoing — more curiosity than necessity.</p>
+        </div>
+
+      </div>
+    </div>
+    <footer>annihilatedhamster</footer>
+  </div>
+
+  <!-- RESOURCES -->
+  <div id="resources" class="page">
+    <div class="inner">
+      <h1 class="page-title">resources</h1>
+      <div class="page-rule"></div>
+
+      <div class="resource-section">
+        <p class="resource-category">gear</p>
+        <ul class="resource-list">
+          <li><span class="resource-name">sony zv-e10</span><span class="resource-note">main camera</span></li>
+          <li><span class="resource-name">rode videomic go ii</span><span class="resource-note">audio</span></li>
+          <li><span class="resource-name">elgato key light</span><span class="resource-note">lighting</span></li>
+          <li><span class="resource-name">macbook pro m3</span><span class="resource-note">editing + everything</span></li>
+        </ul>
+      </div>
+
+      <div class="resource-section">
+        <p class="resource-category">software</p>
+        <ul class="resource-list">
+          <li><span class="resource-name">davinci resolve</span><span class="resource-note">video editing</span></li>
+          <li><span class="resource-name">obsidian</span><span class="resource-note">notes / writing</span></li>
+          <li><span class="resource-name">yt-dlp</span><span class="resource-note">video archiving</span></li>
+          <li><span class="resource-name">cursor</span><span class="resource-note">coding</span></li>
+        </ul>
+      </div>
+
+      <div class="resource-section">
+        <p class="resource-category">reading</p>
+        <ul class="resource-list">
+          <li><span class="resource-name">a mind for numbers</span><span class="resource-note">barbara oakley</span></li>
+          <li><span class="resource-name">the almanack of naval ravikant</span><span class="resource-note">eric jorgenson</span></li>
+          <li><span class="resource-name">show your work</span><span class="resource-note">austin kleon</span></li>
+        </ul>
+      </div>
+
+    </div>
+    <footer>annihilatedhamster</footer>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="about" class="page">
+    <div class="inner">
+      <h1 class="page-title">about</h1>
+      <div class="page-rule"></div>
+
+      <p class="about-text">
+        i'm someone who thinks too much and builds to process it. this channel is how i make sense of things — businesses, systems, ideas that feel obvious in retrospect but weren't when i started.<br><br>
+        i'm not an expert. i'm <em>figuring it out in real time</em>, which means sometimes i'm wrong, and sometimes i change my mind. i think that's more honest than pretending to have answers i don't have.<br><br>
+        most of what i make starts as a question i couldn't stop thinking about. i'm interested in how things actually work — not the polished version, but the version with the rough edges still on it.
+      </p>
+
+      <div class="about-meta">
+        <div class="about-meta-row">
+          <span class="meta-label">location</span>
+          <span class="meta-value">san diego, california</span>
+        </div>
+        <div class="about-meta-row">
+          <span class="meta-label">doing</span>
+          <span class="meta-value">college, card business, building things slowly</span>
+        </div>
+        <div class="about-meta-row">
+          <span class="meta-label">interested in</span>
+          <span class="meta-value">systems, markets, the process behind the result</span>
+        </div>
+        <div class="about-meta-row">
+          <span class="meta-label">channel</span>
+          <span class="meta-value">youtube.com/@annihilatedhamster</span>
+        </div>
+      </div>
+
+    </div>
+    <footer>annihilatedhamster</footer>
+  </div>
+
+  <script>
+    function show(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.add('active');
+        // re-trigger animations
+        target.querySelectorAll('[style*="animation"], .note-entry, .project-item, .video-item, .about-text, .about-meta').forEach(el => {
+          el.style.animation = 'none';
+          el.offsetHeight;
+          el.style.animation = '';
+        });
+        window.scrollTo(0, 0);
+      }
+      return false;
+    }
+  </script>
+</body>
+</html>
